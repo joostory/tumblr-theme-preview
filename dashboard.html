@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tumblr Theme Live Preview Suite</title>
+  <!-- Google Fonts Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #1e1b4b 100%);
+      --panel-bg: rgba(15, 23, 42, 0.45);
+      --panel-border: rgba(255, 255, 255, 0.06);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --accent-hover: #7dd3fc;
+      --active-bg: rgba(255, 255, 255, 0.08);
+      --input-bg: rgba(15, 23, 42, 0.8);
+      --card-radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Left Sidebar Panel */
+    .sidebar {
+      width: 320px;
+      flex-shrink: 0;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--panel-border);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+      z-index: 10;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--panel-border);
+      flex-shrink: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      font-size: 20px;
+      color: var(--accent);
+      text-shadow: 0 0 15px var(--accent-glow);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .logo-text h2 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #fff, #7dd3fc, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-text span {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .sidebar-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Webkit Custom Scrollbar */
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .control-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-section h3 {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    /* Control elements styling */
+    .btn-group-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .view-btn {
+      background: transparent;
+      border: 1px solid var(--panel-border);
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .view-btn:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .view-btn.active {
+      background: var(--active-bg);
+      border-color: var(--accent);
+      color: var(--text-main);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .btn-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .vp-btn {
+      background: transparent;
+      border: 1px solid var(--panel-border);
+      color: var(--text-muted);
+      padding: 8px 0;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .vp-btn:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-main);
+    }
+
+    .vp-btn.active {
+      background: var(--active-bg);
+      border-color: var(--accent);
+      color: var(--text-main);
+    }
+
+    /* Form inputs styling */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .form-group.flex-row {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+
+    .form-select, .form-input {
+      background: var(--input-bg);
+      border: 1px solid var(--panel-border);
+      color: var(--text-main);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      outline: none;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .form-select:focus, .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* Switch Styling */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: .3s;
+      border-radius: 22px;
+      border: 1px solid var(--panel-border);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #fff;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent-glow);
+      border-color: var(--accent);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+      background-color: var(--accent);
+    }
+
+    /* Footer Panel */
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--panel-border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .footer-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, #0284c7 100%);
+      border: none;
+      color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.35);
+      transition: var(--transition);
+    }
+
+    .footer-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(217, 70, 239, 0.5);
+    }
+
+    .footer-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Preview Area */
+    .preview-area {
+      flex: 1;
+      min-width: 0; /* Flex item shrink limitation fix */
+      display: flex;
+      flex-direction: column;
+      background: rgba(0, 0, 0, 0.2);
+      height: 100vh;
+    }
+
+    .preview-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.2);
+    }
+
+    .browser-address-bar {
+      display: flex;
+      align-items: center;
+      background: var(--input-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      width: 100%;
+      padding: 6px 16px;
+      gap: 12px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .indicator-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .indicator-dot.red { background-color: #ef4444; }
+    .indicator-dot.yellow { background-color: #eab308; }
+    .indicator-dot.green { background-color: #22c55e; }
+
+    .address-input {
+      flex: 1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      user-select: all;
+    }
+
+    #btn-copy-address {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #btn-copy-address:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    /* Iframe Viewport */
+    .iframe-container {
+      flex: 1;
+      min-width: 0; /* Stop iframe child width from blocking flexible shrink */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding: 16px;
+      position: relative;
+    }
+
+    .iframe-wrapper {
+      width: 100%;
+      max-width: 100%; /* Prevent 가상 뷰포트 from breaking layout when window is narrower than selection */
+      height: 100%;
+      background: #fff;
+      border-radius: var(--card-radius);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    /* Mobile & Tablet Frame Mockups */
+    .iframe-wrapper.mobile-view {
+      box-shadow: 0 0 0 12px #1e293b, 0 20px 50px rgba(0,0,0,0.5);
+    }
+    
+    .iframe-wrapper.tablet-view {
+      box-shadow: 0 0 0 16px #1e293b, 0 25px 60px rgba(0,0,0,0.5);
+    }
+
+    #preview-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #fff;
+    }
+
+    /* Loading Animation Overlay */
+    .iframe-wrapper::after {
+      content: "LIVE RENDERING...";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--accent);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 5;
+    }
+
+    .iframe-wrapper.loading::after {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.08); filter: brightness(1.2); }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">✦</span>
+        <div class="logo-text">
+          <h2>Theme Preview</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-scroll">
+      <!-- 1. View Type Selection -->
+      <section class="control-section">
+        <h3>🖥️ 뷰 모드</h3>
+        <div class="btn-group-vertical">
+          <button class="view-btn active" data-view="index">홈 / 인덱스 (Index)</button>
+          <button class="view-btn" data-view="permalink" data-param="postId=post-1">상세 페이지 (Text Post)</button>
+          <button class="view-btn" data-view="permalink" data-param="postId=post-2">상세 페이지 (Photo Post)</button>
+          <button class="view-btn" data-view="tag" data-param="tag=css">태그 페이지 (#css)</button>
+          <button class="view-btn" data-view="search" data-param="q=Modern">검색 결과 (성공)</button>
+          <button class="view-btn" data-view="no-search">검색 결과 (없음)</button>
+        </div>
+      </section>
+
+      <!-- 2. Responsive Viewport -->
+      <section class="control-section">
+        <h3>📱 뷰포트 크기</h3>
+        <div class="btn-grid-3">
+          <button class="vp-btn" data-width="375px" title="Mobile">Mobile</button>
+          <button class="vp-btn" data-width="768px" title="Tablet">Tablet</button>
+          <button class="vp-btn active" data-width="100%" title="Desktop">Desktop</button>
+        </div>
+      </section>
+
+      <!-- 3. Tumblr Theme Settings (Variables) -->
+      <section class="control-section">
+        <h3>⚙️ 테마 커스텀 변수</h3>
+        
+        <div class="form-group">
+          <label for="layoutWidth">레이아웃 가로 폭</label>
+          <select id="layoutWidth" class="form-select">
+            <option value="640px">Narrow (640px)</option>
+            <option value="780px" selected>Regular (780px)</option>
+            <option value="960px">Wide (960px)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="syntaxTheme">코드 하이라이트 테마</label>
+          <select id="syntaxTheme" class="form-select">
+            <option value="vs2015" selected>Dark (vs2015)</option>
+            <option value="default">Light (default)</option>
+          </select>
+        </div>
+
+        <div class="form-group flex-row">
+          <label for="endlessScroll">무한 스크롤 사용</label>
+          <label class="switch">
+            <input type="checkbox" id="endlessScroll" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="disqusShortname">Disqus Shortname</label>
+          <input type="text" id="disqusShortname" class="form-input" value="joostory-local" placeholder="Disqus ID">
+        </div>
+
+        <div class="form-group">
+          <label for="gaId">Google Analytics ID</label>
+          <input type="text" id="gaId" class="form-input" value="UA-XXXXX-Y" placeholder="UA-XXXXX-Y">
+        </div>
+      </section>
+    </div>
+
+    <div class="sidebar-footer">
+      <button id="refresh-btn" class="footer-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        강제 새로고침 (Cache Bust)
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Live Preview Area -->
+  <main class="preview-area">
+    <div class="preview-header">
+      <div class="browser-address-bar">
+        <div class="dots">
+          <span class="indicator-dot red"></span>
+          <span class="indicator-dot yellow"></span>
+          <span class="indicator-dot green"></span>
+        </div>
+        <div class="address-input" id="address-bar">
+          http://localhost:3000/render?viewType=index
+        </div>
+        <button id="btn-copy-address" title="주소 복사">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="iframe-container">
+      <div class="iframe-wrapper" id="iframe-wrapper">
+        <iframe id="preview-frame" src="/render?viewType=index" frameborder="0"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const previewFrame = document.getElementById('preview-frame');
+      const iframeWrapper = document.getElementById('iframe-wrapper');
+      const addressBar = document.getElementById('address-bar');
+      const viewButtons = document.querySelectorAll('.view-btn');
+      const vpButtons = document.querySelectorAll('.vp-btn');
+      
+      // Settings Elements
+      const layoutWidthSelect = document.getElementById('layoutWidth');
+      const syntaxThemeSelect = document.getElementById('syntaxTheme');
+      const endlessScrollCheck = document.getElementById('endlessScroll');
+      const disqusInput = document.getElementById('disqusShortname');
+      const gaInput = document.getElementById('gaId');
+      const refreshBtn = document.getElementById('refresh-btn');
+      const copyBtn = document.getElementById('btn-copy-address');
+
+      // Current View State
+      let currentView = 'index';
+      let currentParam = '';
+
+      // UI를 기반으로 렌더링 URL 생성
+      function getRenderUrl(useCacheBuster = false) {
+        const layoutWidth = layoutWidthSelect.value;
+        const syntaxTheme = syntaxThemeSelect.value;
+        const endlessScroll = endlessScrollCheck.checked ? '1' : '0';
+        const disqus = encodeURIComponent(disqusInput.value);
+        const ga = encodeURIComponent(gaInput.value);
+
+        let url = `/render?viewType=${currentView}`;
+        if (currentParam) {
+          url += `&${currentParam}`;
+        }
+        
+        url += `&layoutWidth=${layoutWidth}`;
+        url += `&syntaxTheme=${syntaxTheme}`;
+        url += `&endlessScroll=${endlessScroll}`;
+        url += `&disqusShortname=${disqus}`;
+        url += `&gaId=${ga}`;
+
+        if (useCacheBuster) {
+          url += `&_t=${Date.now()}`;
+        }
+
+        return url;
+      }
+
+      // 프리뷰 갱신
+      function updatePreview(cacheBust = false) {
+        const targetUrl = getRenderUrl(cacheBust);
+        
+        // 로더 효과
+        iframeWrapper.classList.add('loading');
+        
+        previewFrame.src = targetUrl;
+        
+        // 가상 주소 표시줄 업데이트 (Buster 파라미터는 노출 제외로 깔끔하게 처리)
+        const displayUrl = window.location.origin + targetUrl.split('&_t=')[0];
+        addressBar.textContent = displayUrl;
+      }
+
+      previewFrame.addEventListener('load', () => {
+        iframeWrapper.classList.remove('loading');
+      });
+
+      // 1. 뷰 모드 이벤트 바인딩
+      viewButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          viewButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          currentView = btn.dataset.view;
+          currentParam = btn.dataset.param || '';
+          updatePreview();
+        });
+      });
+
+      // 2. 뷰포트 크기 변경 바인딩
+      vpButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          vpButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          const targetWidth = btn.dataset.width;
+          iframeWrapper.style.width = targetWidth;
+          
+          // 데스크톱 모드가 아닐 때 폰처럼 보이게 쉐도우 및 테두리 효과 추가
+          if (targetWidth === '100%') {
+            iframeWrapper.classList.remove('mobile-view', 'tablet-view');
+          } else if (targetWidth === '768px') {
+            iframeWrapper.classList.remove('mobile-view');
+            iframeWrapper.classList.add('tablet-view');
+          } else {
+            iframeWrapper.classList.remove('tablet-view');
+            iframeWrapper.classList.add('mobile-view');
+          }
+        });
+      });
+
+      // 3. 설정 컨트롤 실시간 리스너 바인딩
+      [layoutWidthSelect, syntaxThemeSelect, endlessScrollCheck].forEach(elem => {
+        elem.addEventListener('change', () => updatePreview());
+      });
+
+      [disqusInput, gaInput].forEach(elem => {
+        let debounceTimer;
+        elem.addEventListener('input', () => {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => updatePreview(), 500); // 500ms 디바운스 적용
+        });
+      });
+
+      // 4. 캐시 방지 강제 새로고침
+      refreshBtn.addEventListener('click', () => {
+        updatePreview(true);
+      });
+
+      // 5. URL 주소 복사
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(addressBar.textContent)
+          .then(() => {
+            const origBg = copyBtn.style.background;
+            copyBtn.style.background = '#22c55e';
+            setTimeout(() => {
+              copyBtn.style.background = origBg;
+            }, 1000);
+          })
+          .catch(err => {
+            console.error('Copy failed', err);
+          });
+      });
+
+      // 초기 프리뷰 업데이트
+      updatePreview();
+    });
+  </script>
+</body>
+</html>

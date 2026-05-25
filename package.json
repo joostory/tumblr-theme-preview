@@ -1,0 +1,35 @@
+{
+  "name": "tumblr-theme-preview",
+  "version": "1.0.0",
+  "description": "Zero-config local live preview & debugging suite for Tumblr custom themes.",
+  "main": "lib/server.js",
+  "bin": {
+    "tumblr-theme-preview": "./bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js"
+  },
+  "keywords": [
+    "tumblr",
+    "tumblr-theme",
+    "preview",
+    "live-reload",
+    "template-engine",
+    "cli"
+  ],
+  "author": "Joo",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "dashboard.html",
+    "sample-theme.html",
+    "README.md"
+  ]
+}
