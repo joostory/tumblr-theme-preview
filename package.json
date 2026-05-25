@@ -4,7 +4,7 @@
   "description": "Zero-config local live preview & debugging suite for Tumblr custom themes.",
   "main": "lib/server.js",
   "bin": {
-    "tumblr-theme-preview": "./bin/cli.js"
+    "tumblr-theme-preview": "bin/cli.js"
   },
   "scripts": {
     "start": "node bin/cli.js"
