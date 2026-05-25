@@ -4,6 +4,11 @@ on:
   release:
     types: [created]
 
+# OIDC 인증을 위해 GitHub ID 토큰을 npm에 제시할 수 있는 권한을 부여합니다.
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -20,7 +25,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      # --provenance 옵션을 붙여 비밀 토큰 없이 OIDC 신뢰 연동만으로 안전하게 배포합니다.
       - name: Publish Package to npm
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance
