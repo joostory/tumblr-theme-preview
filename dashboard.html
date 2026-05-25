@@ -500,43 +500,11 @@
         </div>
       </section>
 
-      <!-- 3. Tumblr Theme Settings (Variables) -->
-      <section class="control-section">
+      <!-- 3. Tumblr Theme Settings (Variables) - 동적으로 생성됨 -->
+      <section class="control-section" id="theme-settings-section" style="display: none;">
         <h3>⚙️ 테마 커스텀 변수</h3>
-        
-        <div class="form-group">
-          <label for="layoutWidth">레이아웃 가로 폭</label>
-          <select id="layoutWidth" class="form-select">
-            <option value="640px">Narrow (640px)</option>
-            <option value="780px" selected>Regular (780px)</option>
-            <option value="960px">Wide (960px)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="syntaxTheme">코드 하이라이트 테마</label>
-          <select id="syntaxTheme" class="form-select">
-            <option value="vs2015" selected>Dark (vs2015)</option>
-            <option value="default">Light (default)</option>
-          </select>
-        </div>
-
-        <div class="form-group flex-row">
-          <label for="endlessScroll">무한 스크롤 사용</label>
-          <label class="switch">
-            <input type="checkbox" id="endlessScroll" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-
-        <div class="form-group">
-          <label for="disqusShortname">Disqus Shortname</label>
-          <input type="text" id="disqusShortname" class="form-input" value="joostory-local" placeholder="Disqus ID">
-        </div>
-
-        <div class="form-group">
-          <label for="gaId">Google Analytics ID</label>
-          <input type="text" id="gaId" class="form-input" value="UA-XXXXX-Y" placeholder="UA-XXXXX-Y">
+        <div id="dynamic-variables-container" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- 동적 변수 컨트롤러가 여기에 삽입됩니다. -->
         </div>
       </section>
     </div>
@@ -581,38 +549,37 @@
       const addressBar = document.getElementById('address-bar');
       const viewButtons = document.querySelectorAll('.view-btn');
       const vpButtons = document.querySelectorAll('.vp-btn');
-      
-      // Settings Elements
-      const layoutWidthSelect = document.getElementById('layoutWidth');
-      const syntaxThemeSelect = document.getElementById('syntaxTheme');
-      const endlessScrollCheck = document.getElementById('endlessScroll');
-      const disqusInput = document.getElementById('disqusShortname');
-      const gaInput = document.getElementById('gaId');
       const refreshBtn = document.getElementById('refresh-btn');
       const copyBtn = document.getElementById('btn-copy-address');
+      
+      const themeSettingsSection = document.getElementById('theme-settings-section');
+      const variablesContainer = document.getElementById('dynamic-variables-container');
 
       // Current View State
       let currentView = 'index';
       let currentParam = '';
+      let themeVariables = []; // 로드된 동적 변수 정보 저장
 
       // UI를 기반으로 렌더링 URL 생성
       function getRenderUrl(useCacheBuster = false) {
-        const layoutWidth = layoutWidthSelect.value;
-        const syntaxTheme = syntaxThemeSelect.value;
-        const endlessScroll = endlessScrollCheck.checked ? '1' : '0';
-        const disqus = encodeURIComponent(disqusInput.value);
-        const ga = encodeURIComponent(gaInput.value);
-
         let url = `/render?viewType=${currentView}`;
         if (currentParam) {
           url += `&${currentParam}`;
         }
         
-        url += `&layoutWidth=${layoutWidth}`;
-        url += `&syntaxTheme=${syntaxTheme}`;
-        url += `&endlessScroll=${endlessScroll}`;
-        url += `&disqusShortname=${disqus}`;
-        url += `&gaId=${ga}`;
+        // 동적 커스텀 변수 쿼리 파라미터 조합
+        themeVariables.forEach(v => {
+          const elem = document.getElementById(`var-${v.key}`);
+          if (elem) {
+            let val = '';
+            if (v.type === 'if') {
+              val = elem.checked ? '1' : '0';
+            } else {
+              val = elem.value;
+            }
+            url += `&${v.key}=${encodeURIComponent(val)}`;
+          }
+        });
 
         if (useCacheBuster) {
           url += `&_t=${Date.now()}`;
@@ -630,7 +597,7 @@
         
         previewFrame.src = targetUrl;
         
-        // 가상 주소 표시줄 업데이트 (Buster 파라미터는 노출 제외로 깔끔하게 처리)
+        // 가상 주소 표시줄 업데이트
         const displayUrl = window.location.origin + targetUrl.split('&_t=')[0];
         addressBar.textContent = displayUrl;
       }
@@ -660,7 +627,6 @@
           const targetWidth = btn.dataset.width;
           iframeWrapper.style.width = targetWidth;
           
-          // 데스크톱 모드가 아닐 때 폰처럼 보이게 쉐도우 및 테두리 효과 추가
           if (targetWidth === '100%') {
             iframeWrapper.classList.remove('mobile-view', 'tablet-view');
           } else if (targetWidth === '768px') {
@@ -673,18 +639,97 @@
         });
       });
 
-      // 3. 설정 컨트롤 실시간 리스너 바인딩
-      [layoutWidthSelect, syntaxThemeSelect, endlessScrollCheck].forEach(elem => {
-        elem.addEventListener('change', () => updatePreview());
-      });
+      // 3. 테마 파일 커스텀 변수 로드 및 동적 UI 생성
+      async function loadThemeVariables() {
+        try {
+          const response = await fetch('/api/theme-variables');
+          if (!response.ok) throw new Error('API 호출 실패');
+          
+          const data = await response.json();
+          themeVariables = data.variables || [];
+          
+          if (themeVariables.length === 0) {
+            // 변수가 없으면 섹션을 완전히 감추어 깔끔하게 처리 (사용자 요청 사항 반영)
+            themeSettingsSection.style.display = 'none';
+            updatePreview();
+            return;
+          }
 
-      [disqusInput, gaInput].forEach(elem => {
-        let debounceTimer;
-        elem.addEventListener('input', () => {
-          clearTimeout(debounceTimer);
-          debounceTimer = setTimeout(() => updatePreview(), 500); // 500ms 디바운스 적용
-        });
-      });
+          // 변수가 존재하면 UI 생성 및 노출
+          themeSettingsSection.style.display = 'flex';
+          variablesContainer.innerHTML = ''; // 초기화
+
+          themeVariables.forEach(v => {
+            const formGroup = document.createElement('div');
+            
+            if (v.type === 'if') {
+              formGroup.className = 'form-group flex-row';
+              const isChecked = v.default === '1' || v.default === 'true' || v.default === true;
+              formGroup.innerHTML = `
+                <label for="var-${v.key}">${v.name}</label>
+                <label class="switch">
+                  <input type="checkbox" id="var-${v.key}" ${isChecked ? 'checked' : ''}>
+                  <span class="slider"></span>
+                </label>
+              `;
+            } else if (v.type === 'select') {
+              formGroup.className = 'form-group';
+              const optionsHtml = v.options.map(opt => {
+                const isSelected = opt.value === v.default;
+                return `<option value="${opt.value}" ${isSelected ? 'selected' : ''}>${opt.title}</option>`;
+              }).join('');
+              
+              formGroup.innerHTML = `
+                <label for="var-${v.key}">${v.name}</label>
+                <select id="var-${v.key}" class="form-select">
+                  ${optionsHtml}
+                </select>
+              `;
+            } else if (v.type === 'color') {
+              formGroup.className = 'form-group flex-row';
+              // 컬러값 포맷 보정 (#이 없으면 추가)
+              let defaultColor = v.default || '#ffffff';
+              if (defaultColor.match(/^[0-9a-fA-F]{3,6}$/)) {
+                defaultColor = '#' + defaultColor;
+              }
+              formGroup.innerHTML = `
+                <label for="var-${v.key}">${v.name}</label>
+                <input type="color" id="var-${v.key}" class="form-input" style="width: 50px; height: 32px; padding: 2px; border: 1px solid var(--panel-border); background: var(--input-bg); cursor: pointer; border-radius: 8px;" value="${defaultColor}">
+              `;
+            } else {
+              // text, font, image 등 일반 텍스트
+              formGroup.className = 'form-group';
+              formGroup.innerHTML = `
+                <label for="var-${v.key}">${v.name}</label>
+                <input type="text" id="var-${v.key}" class="form-input" value="${v.default || ''}" placeholder="${v.name} 입력">
+              `;
+            }
+
+            variablesContainer.appendChild(formGroup);
+
+            // 실시간 바인딩 이벤트 리스너 추가
+            const inputElem = document.getElementById(`var-${v.key}`);
+            if (inputElem) {
+              if (v.type === 'if' || v.type === 'select' || v.type === 'color') {
+                inputElem.addEventListener('change', () => updatePreview());
+              } else {
+                let debounceTimer;
+                inputElem.addEventListener('input', () => {
+                  clearTimeout(debounceTimer);
+                  debounceTimer = setTimeout(() => updatePreview(), 500);
+                });
+              }
+            }
+          });
+
+          // 최초 프리뷰 업데이트
+          updatePreview();
+        } catch (error) {
+          console.error('테마 변수 로딩 에러:', error);
+          themeSettingsSection.style.display = 'none';
+          updatePreview();
+        }
+      }
 
       // 4. 캐시 방지 강제 새로고침
       refreshBtn.addEventListener('click', () => {
@@ -706,8 +751,8 @@
           });
       });
 
-      // 초기 프리뷰 업데이트
-      updatePreview();
+      // 동적 변수 로드 후 초기 프리뷰 로딩 시작
+      loadThemeVariables();
     });
   </script>
 </body>

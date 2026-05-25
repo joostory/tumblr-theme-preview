@@ -3,6 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- 텀블러 테마 설정 변수 정의 (동적 추출 테스트용) -->
+  <meta name="select:Layout Width" content="780px" title="Regular"/>
+  <meta name="select:Layout Width" content="640px" title="Narrow"/>
+  <meta name="select:Layout Width" content="960px" title="Wide"/>
+  
+  <meta name="select:Syntax Highlight theme" content="vs2015" title="Dark"/>
+  <meta name="select:Syntax Highlight theme" content="default" title="Light"/>
+  
+  <meta name="if:Endless Scroll" content="1"/>
+  <meta name="text:Disqus Shortname" content="joostory-local"/>
+  <meta name="text:Google Analytics ID" content="UA-XXXXX-Y"/>
+  
+  <!-- 컬러 피커 연동 검증용 추가 변수 -->
+  <meta name="color:Accent Color" content="#38bdf8"/>
+
   <title>{Title}</title>
   <style>
     :root {
@@ -12,7 +28,7 @@
       --card-bg: #1e293b;
       --text-color: #f8fafc;
       --text-muted: #94a3b8;
-      --accent-color: #38bdf8;
+      --accent-color: {color:Accent Color};
     }
 
     * {
@@ -247,6 +263,7 @@
           {/block:IfDisqusShortname}
         </li>
         <li>• Google Analytics ID: <strong>{text:Google Analytics ID}</strong></li>
+        <li>• Accent Color: <strong style="color: {color:Accent Color};">{color:Accent Color}</strong></li>
       </ul>
     </div>
   </div>
