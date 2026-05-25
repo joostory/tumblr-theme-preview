@@ -19,6 +19,14 @@
   ],
   "author": "Joo",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joostory/tumblr-theme-preview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joostory/tumblr-theme-preview/issues"
+  },
+  "homepage": "https://github.com/joostory/tumblr-theme-preview#readme",
   "dependencies": {
     "express": "^4.19.2"
   },
