@@ -133,6 +133,100 @@
       color: #0f172a;
     }
 
+    /* Notes Styling */
+    .post-notes-section {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #334155;
+    }
+    
+    .post-notes-section h3 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    ol.notes {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    ol.notes li.note {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    
+    ol.notes li.note:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    ol.notes li.note a.avatar_frame {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 10px;
+      border-radius: 4px;
+      overflow: hidden;
+      line-height: 0;
+    }
+    
+    ol.notes li.note img.avatar {
+      width: 20px;
+      height: 20px;
+      object-fit: cover;
+      vertical-align: middle;
+    }
+    
+    ol.notes li.note span.action {
+      vertical-align: middle;
+      color: var(--text-muted);
+    }
+    
+    ol.notes li.note span.action a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    ol.notes li.note span.action a:hover {
+      text-decoration: underline;
+    }
+    
+    ol.notes li.note blockquote {
+      margin: 10px 0 0 30px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--accent-color);
+      background-color: rgba(255, 255, 255, 0.02);
+      border-radius: 0 8px 8px 0;
+    }
+    
+    ol.notes li.note blockquote a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      display: block;
+    }
+    
+    ol.notes li.note blockquote a:hover {
+      color: var(--text-color);
+    }
+    
+    .clear {
+      clear: both;
+    }
+
     /* 대시보드의 '코드 하이라이트 테마' 설정({select:Syntax Highlight theme})에 반응하는 스타일 */
     .syntax-theme-info {
       background-color: #090d16;
@@ -191,7 +285,7 @@
     {block:Posts}
       <article class="post">
         <div class="post-meta">
-          <span>{ShortMonth} {DayOfMonth}, {Year}</span>
+          <span>{DayOfWeekShort}, {ShortMonth} {DayOfMonthWithZero}, {Year} ({TimeAgo})</span>
           <span>•</span>
           <span class="author">By {PostAuthorName}</span>
         </div>
@@ -225,6 +319,14 @@
             {/block:Tags}
           </div>
         {/block:HasTags}
+
+        <!-- 포스트 상세페이지(Permalink)에서만 노츠 목록 렌더링 -->
+        {block:PostNotes}
+          <div class="post-notes-section">
+            <h3>노츠 ({NoteCountWithLabel})</h3>
+            {PostNotes}
+          </div>
+        {/block:PostNotes}
       </article>
     {/block:Posts}
 
@@ -242,6 +344,34 @@
         <p>무한 스크롤이 꺼져 있으므로 일반 페이지네이션이 동작합니다. (페이지 번호 링크 제공)</p>
       </div>
     {/block:IfNotEndlessScroll}
+
+    <!-- 날짜/시간 변수 실시간 테스트 안내 패널 -->
+    <div class="debug-box" style="margin-top: 20px; border-color: rgba(168, 85, 247, 0.4); background-color: rgba(168, 85, 247, 0.03);">
+      <h4 style="color: #c084fc;">📅 Tumblr Date & Time Variables Test</h4>
+      <p style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted);">첫 번째 포스트 기준으로 계산된 동적 날짜/시간 변수 목록입니다.</p>
+      {block:Posts}
+        {block:Text}
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; font-family: monospace; font-size: 0.85rem;">
+            <div>• DayOfMonth: <strong style="color: #c084fc;">{DayOfMonth}</strong></div>
+            <div>• DayOfMonthWithZero: <strong style="color: #c084fc;">{DayOfMonthWithZero}</strong></div>
+            <div>• DayOfWeek: <strong style="color: #c084fc;">{DayOfWeek}</strong></div>
+            <div>• DayOfWeekShort: <strong style="color: #c084fc;">{DayOfWeekShort}</strong></div>
+            <div>• DayOfYear: <strong style="color: #c084fc;">{DayOfYear}</strong></div>
+            <div>• WeekOfYear: <strong style="color: #c084fc;">{WeekOfYear}</strong></div>
+            <div>• Month: <strong style="color: #c084fc;">{Month}</strong></div>
+            <div>• MonthNumber: <strong style="color: #c084fc;">{MonthNumber}</strong></div>
+            <div>• MonthNumberWithZero: <strong style="color: #c084fc;">{MonthNumberWithZero}</strong></div>
+            <div>• ShortYear: <strong style="color: #c084fc;">{ShortYear}</strong></div>
+            <div>• AmPm / AmPmUpper: <strong style="color: #c084fc;">{AmPm} / {AmPmUpper}</strong></div>
+            <div>• Hour / Hour24: <strong style="color: #c084fc;">{Hour} / {Hour24}</strong></div>
+            <div>• HourWithZero / Hour24WithZero: <strong style="color: #c084fc;">{HourWithZero} / {Hour24WithZero}</strong></div>
+            <div>• Minutes / Seconds: <strong style="color: #c084fc;">{Minutes}:{Seconds}</strong></div>
+            <div>• Timestamp: <strong style="color: #c084fc;">{Timestamp}</strong></div>
+            <div>• TimeAgo: <strong style="color: #c084fc;">{TimeAgo}</strong></div>
+          </div>
+        {/block:Text}
+      {/block:Posts}
+    </div>
 
     <!-- 설정 변수 디버그 안내 패널 -->
     <div class="debug-box" style="margin-top: 20px;">
