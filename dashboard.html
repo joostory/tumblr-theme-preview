@@ -11,18 +11,18 @@
   
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #1e1b4b 100%);
-      --panel-bg: rgba(15, 23, 42, 0.45);
-      --panel-border: rgba(255, 255, 255, 0.06);
+      --bg-gradient: linear-gradient(135deg, #09090b 0%, #18181b 50%, #09090b 100%);
+      --panel-bg: rgba(24, 24, 27, 0.65);
+      --panel-border: rgba(255, 255, 255, 0.08);
       --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
-      --accent-hover: #7dd3fc;
-      --active-bg: rgba(255, 255, 255, 0.08);
-      --input-bg: rgba(15, 23, 42, 0.8);
+      --text-muted: #cbd5e1; /* 비선택 버튼/텍스트 가독성을 높이기 위해 더 밝게 조정 */
+      --accent: #ffffff; /* 순백색 강조로 모던함 연출 */
+      --accent-glow: rgba(255, 255, 255, 0.12);
+      --accent-hover: #e2e8f0;
+      --active-bg: rgba(255, 255, 255, 0.12);
+      --input-bg: rgba(39, 39, 42, 0.75);
       --card-radius: 16px;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     * {
@@ -72,7 +72,7 @@
     .logo-icon {
       font-size: 20px;
       color: var(--accent);
-      text-shadow: 0 0 15px var(--accent-glow);
+      text-shadow: 0 0 12px var(--accent-glow);
       animation: pulse 2s infinite ease-in-out;
     }
 
@@ -80,7 +80,7 @@
       font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.5px;
-      background: linear-gradient(to right, #fff, #7dd3fc, var(--accent));
+      background: linear-gradient(to right, #ffffff, #cbd5e1, #94a3b8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -100,7 +100,7 @@
       padding: 16px 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px; /* 카드간 여백 */
     }
 
     /* Webkit Custom Scrollbar */
@@ -118,15 +118,23 @@
     .control-section {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02);
     }
 
     .control-section h3 {
-      font-size: 11px;
-      color: var(--text-muted);
+      font-size: 12px;
+      color: #ffffff;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+      border-left: 3px solid var(--accent);
+      padding-left: 8px;
+      margin-bottom: 2px;
     }
 
     /* Control elements styling */
@@ -137,10 +145,10 @@
     }
 
     .view-btn {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--panel-border);
       color: var(--text-muted);
-      padding: 8px 12px;
+      padding: 9px 12px;
       border-radius: 8px;
       text-align: left;
       font-size: 13px;
@@ -151,16 +159,17 @@
     }
 
     .view-btn:hover {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text-main);
-      border-color: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .view-btn.active {
       background: var(--active-bg);
       border-color: var(--accent);
       color: var(--text-main);
-      box-shadow: 0 0 15px var(--accent-glow);
+      box-shadow: 0 0 12px var(--accent-glow);
+      font-weight: 600;
     }
 
     .btn-grid-3 {
@@ -170,10 +179,10 @@
     }
 
     .vp-btn {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--panel-border);
       color: var(--text-muted);
-      padding: 8px 0;
+      padding: 9px 0;
       border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
@@ -183,14 +192,16 @@
     }
 
     .vp-btn:hover {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .vp-btn.active {
       background: var(--active-bg);
       border-color: var(--accent);
       color: var(--text-main);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
     /* Form inputs styling */
@@ -198,7 +209,7 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
     .form-group.flex-row {
@@ -210,8 +221,8 @@
 
     .form-group label {
       font-size: 12px;
-      font-weight: 500;
-      color: #cbd5e1;
+      font-weight: 600;
+      color: #f1f5f9;
     }
 
     .form-select, .form-input {
@@ -271,7 +282,7 @@
     }
 
     input:checked + .slider {
-      background-color: var(--accent-glow);
+      background-color: rgba(255, 255, 255, 0.2);
       border-color: var(--accent);
     }
 
@@ -280,42 +291,6 @@
       background-color: var(--accent);
     }
 
-    /* Footer Panel */
-    .sidebar-footer {
-      padding: 16px 20px;
-      border-top: 1px solid var(--panel-border);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .footer-btn {
-      background: linear-gradient(135deg, var(--accent) 0%, #0284c7 100%);
-      border: none;
-      color: #fff;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.35);
-      transition: var(--transition);
-    }
-
-    .footer-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(217, 70, 239, 0.5);
-    }
-
-    .footer-meta {
-      font-size: 10px;
-      color: var(--text-muted);
-      text-align: center;
-    }
 
     /* Preview Area */
     .preview-area {
@@ -373,23 +348,24 @@
       user-select: all;
     }
 
-    #btn-copy-address {
+    .address-btn {
       background: transparent;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
+      padding: 5px;
+      border-radius: 6px;
       transition: var(--transition);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    #btn-copy-address:hover {
-      background: rgba(255, 255, 255, 0.05);
+    .address-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text-main);
     }
+
 
     /* Iframe Viewport */
     .iframe-container {
@@ -417,11 +393,11 @@
 
     /* Mobile & Tablet Frame Mockups */
     .iframe-wrapper.mobile-view {
-      box-shadow: 0 0 0 12px #1e293b, 0 20px 50px rgba(0,0,0,0.5);
+      box-shadow: 0 0 0 12px #27272a, 0 20px 50px rgba(0,0,0,0.5);
     }
     
     .iframe-wrapper.tablet-view {
-      box-shadow: 0 0 0 16px #1e293b, 0 25px 60px rgba(0,0,0,0.5);
+      box-shadow: 0 0 0 16px #27272a, 0 25px 60px rgba(0,0,0,0.5);
     }
 
     #preview-frame {
@@ -509,12 +485,6 @@
       </section>
     </div>
 
-    <div class="sidebar-footer">
-      <button id="refresh-btn" class="footer-btn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-        강제 새로고침 (Cache Bust)
-      </button>
-    </div>
   </aside>
 
   <!-- Main Live Preview Area -->
@@ -529,7 +499,16 @@
         <div class="address-input" id="address-bar">
           http://localhost:3000/render?viewType=index
         </div>
-        <button id="btn-copy-address" title="주소 복사">
+        <!-- 일반 새로고침 -->
+        <button id="btn-refresh" class="address-btn" title="새로고침">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </button>
+        <!-- 강제 새로고침 (Cache Bust) -->
+        <button id="btn-hard-refresh" class="address-btn" title="강제 새로고침 (캐시 우회)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor" stroke="none" transform="matrix(0.4 0 0 0.4 7 7)"/></svg>
+        </button>
+        <!-- 주소 복사 -->
+        <button id="btn-copy-address" class="address-btn" title="주소 복사">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         </button>
       </div>
@@ -549,7 +528,8 @@
       const addressBar = document.getElementById('address-bar');
       const viewButtons = document.querySelectorAll('.view-btn');
       const vpButtons = document.querySelectorAll('.vp-btn');
-      const refreshBtn = document.getElementById('refresh-btn');
+      const refreshBtn = document.getElementById('btn-refresh');
+      const hardRefreshBtn = document.getElementById('btn-hard-refresh');
       const copyBtn = document.getElementById('btn-copy-address');
       
       const themeSettingsSection = document.getElementById('theme-settings-section');
@@ -730,9 +710,13 @@
           updatePreview();
         }
       }
-
-      // 4. 캐시 방지 강제 새로고침
+      // 4-1. 일반 새로고침
       refreshBtn.addEventListener('click', () => {
+        updatePreview(false);
+      });
+
+      // 4-2. 캐시 방지 강제 새로고침
+      hardRefreshBtn.addEventListener('click', () => {
         updatePreview(true);
       });
 
